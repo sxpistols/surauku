@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071521" />
+    <title>Masjid Al-Hikmah — Papan Informasi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="screen" aria-label="Papan informasi Masjid Al-Hikmah">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div>
+            <p class="eyebrow">PAPAN INFORMASI DIGITAL</p>
+            <h1>Masjid Ar-Razqa</h1>
+            <p class="brand-subtitle">Perumahan DM Village Sudimoro, Sewon, Bantul - Yogyakarta</p>
+          </div>
+        </div>
+        <div class="location"><span class="live-dot"></span> Bantul, DI Yogyakarta <span class="divider"></span> <span id="topbarDate">Kamis, 29 Oktober 2026</span></div>
+        <div class="top-actions">
+          <button class="icon-button" id="fullscreenButton" title="Layar penuh" aria-label="Layar penuh">⛶</button>
+          <button class="icon-button" id="settingsButton" title="Tampilkan pengaturan" aria-label="Tampilkan pengaturan">⚙</button>
+        </div>
+      </header>
+
+      <section class="dashboard">
+        <aside class="schedule-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">JADWAL HARI INI</p>
+              <h2>Waktu Shalat</h2>
+            </div>
+            <div class="hijri-date">17<br /><span>Jumadil Awal 1448 H</span></div>
+          </div>
+          <div class="prayer-list" id="prayerList"></div>
+          <div class="schedule-footer">
+            <span>Imsak besok</span><strong>04:04</strong>
+          </div>
+        </aside>
+
+        <section class="main-stage">
+          <div class="stage-visual" id="stageVisual">
+            <div class="visual-shade"></div>
+            <div class="iqamah-overlay" id="iqamahOverlay" aria-live="polite">
+              <p class="section-kicker">SECONDS TO</p>
+              <div class="iqamah-name" id="iqamahName">SUBUH</div>
+              <div class="iqamah-count" id="iqamahCount">00:00</div>
+              <p>IQAMAH</p>
+            </div>
+            <div class="visual-caption">
+              <p class="section-kicker">SUASANA MASJID</p>
+              <h2 id="slideTitle">Teduh sebelum waktu berkumpul</h2>
+              <div class="slide-controls">
+                <button class="round-control" id="previousSlide" aria-label="Slide sebelumnya">‹</button>
+                <div class="slide-dots" id="slideDots"></div>
+                <button class="round-control" id="nextSlide" aria-label="Slide berikutnya">›</button>
+              </div>
+            </div>
+            <div class="slide-index" id="slideIndex">01 / 03</div>
+          </div>
+
+          <div class="stage-lower">
+            <div class="clock-card">
+              <p class="section-kicker">WAKTU SEKARANG</p>
+              <div class="clock" id="clock">16:22</div>
+              <div class="clock-meta"><span id="gregorianDate">Kamis, 29 Oktober 2026</span><span>WIB</span></div>
+            </div>
+            <div class="next-prayer-card" id="nextPrayerCard">
+              <p class="section-kicker" id="nextPrayerKicker">MENUJU WAKTU BERIKUTNYA</p>
+              <div class="next-label"><span id="nextPrayerName">Ashar</span><span id="nextPrayerTime">14:38</span></div>
+              <div class="countdown" id="countdown">00:00:00</div>
+              <div class="progress-track"><span id="prayerProgress"></span></div>
+              <p class="countdown-note" id="countdownNote">Persiapan menuju waktu shalat</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <footer class="ticker-bar">
+        <div class="ticker-label"><span class="ticker-icon">م</span><span>HADITS HARI INI</span></div>
+        <div class="ticker-window"><div class="ticker-text" id="tickerText">Shalat berjamaah lebih utama dua puluh tujuh derajat daripada shalat sendirian. — HR. Bukhari dan Muslim</div></div>
+        <button class="ticker-toggle" id="tickerToggle" aria-label="Jeda running text">Ⅱ</button>
+      </footer>
+    </main>
+
+    <aside class="settings-drawer" id="settingsDrawer" aria-hidden="true">
+      <div class="drawer-heading"><div><p class="section-kicker">PENGATURAN LAYAR</p><h2>Mode tampilan</h2></div><button class="close-button" id="closeSettings" aria-label="Tutup pengaturan">×</button></div>
+      <label class="setting-row"><span><strong>Slideshow otomatis</strong><small>Ganti visual setiap beberapa detik</small></span><input type="checkbox" id="autoSlideToggle" checked /><i></i></label>
+      <label class="setting-row"><span><strong>Running text</strong><small>Tampilkan hadits dan pengumuman</small></span><input type="checkbox" id="tickerVisibility" checked /><i></i></label>
+      <div class="drawer-note">Jadwal otomatis mengambil data Bantul dari sumber Bimas Islam Kemenag melalui API Muslim. Jika koneksi gagal, aplikasi memakai jadwal terakhir yang tersimpan.</div>
+    </aside>
+    <script src="app.js"></script>
+  </body>
+</html>
