@@ -11,11 +11,11 @@ const savedOffsets = JSON.parse(localStorage.getItem("ar-razqa-iqamah-offsets") 
 if (savedOffsets) prayers = prayers.map((prayer) => ({ ...prayer, offset: savedOffsets[prayer.key] ?? prayer.offset }));
 
 const slides = [
-  { title: "Teduh sebelum waktu berkumpul", image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1600&q=80" },
-  { title: "Masjidil Haram · Makkah", image: "https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?auto=format&fit=crop&w=1600&q=80" },
-  { title: "Damai di halaman Nabawi", image: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1600&q=80" },
-  { title: "Ruang yang menenangkan hati", image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=1600&q=80" },
-  { title: "Jaga lisan, jaga persaudaraan", image: "https://images.unsplash.com/photo-1564121211835-e88c852648ab?auto=format&fit=crop&w=1600&q=80" }
+  { title: "Ka'bah dalam cahaya pagi", image: "https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?auto=format&fit=crop&w=1600&q=80" },
+  { title: "Menghadap Baitullah", image: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1600&q=80" },
+  { title: "Malam yang teduh di Makkah", image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1600&q=80" },
+  { title: "Langkah menuju Masjidil Haram", image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=1600&q=80" },
+  { title: "Doa dan ketenangan di sekitar Ka'bah", image: "https://images.unsplash.com/photo-1564121211835-e88c852648ab?auto=format&fit=crop&w=1600&q=80" }
 ];
 
 const hadiths = [
