@@ -102,6 +102,15 @@ h2 { margin-bottom: 0; font-family: "Playfair Display", serif; font-size: clamp(
 .setting-row i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--muted); transition: .2s; }
 .setting-row input:checked + i { background: rgba(75,200,193,.35); }
 .setting-row input:checked + i::after { left: 21px; background: var(--cyan); }
+.offset-settings { padding-top: 24px; }
+.offset-heading { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 9px; color: var(--muted-strong); font-size: 13px; }
+.offset-heading .section-kicker { margin-bottom: 5px; }
+.offset-heading > span { color: var(--muted); font-size: 10px; }
+.offset-row { min-height: 42px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); color: var(--muted-strong); font-size: 12px; }
+.offset-row label { flex: 1; }
+.offset-row input { width: 58px; padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; outline: none; background: rgba(255,255,255,.05); color: var(--ink); text-align: center; }
+.offset-row input:focus { border-color: var(--amber); }
+.offset-row input::-webkit-inner-spin-button, .offset-row input::-webkit-outer-spin-button { opacity: 1; }
 .drawer-note { margin-top: 24px; padding: 15px; color: var(--muted); background: rgba(255,255,255,.04); border-radius: 8px; font-size: 12px; line-height: 1.6; }
 .drawer-note code { color: var(--amber); }
 @media (max-width: 900px) { body { overflow: auto; } .screen { min-height: 100vh; height: auto; } .topbar { padding: 16px 5vw; gap: 16px; flex-wrap: wrap; } .location { order: 3; width: 100%; } .dashboard { grid-template-columns: 1fr; } .schedule-panel { padding: 25px 5vw 20px; } .main-stage { padding: 20px 5vw; } .stage-visual { min-height: 390px; } .ticker-bar { grid-template-columns: auto 1fr 40px; padding: 0 5vw; gap: 12px; } }

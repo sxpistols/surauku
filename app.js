@@ -7,6 +7,9 @@ let prayers = [
   { name: "Isya", key: "isya", time: "19:04", iqamah: "19:16", symbol: "◑", offset: 12 }
 ];
 
+const savedOffsets = JSON.parse(localStorage.getItem("ar-razqa-iqamah-offsets") || "null");
+if (savedOffsets) prayers = prayers.map((prayer) => ({ ...prayer, offset: savedOffsets[prayer.key] ?? prayer.offset }));
+
 const slides = [
   { title: "Teduh sebelum waktu berkumpul", image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1600&q=80" },
   { title: "Masjidil Haram · Makkah", image: "https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?auto=format&fit=crop&w=1600&q=80" },
@@ -34,6 +37,26 @@ const countdownNote = document.querySelector("#countdownNote");
 const nextPrayerName = document.querySelector("#nextPrayerName");
 const nextPrayerTime = document.querySelector("#nextPrayerTime");
 const prayerProgress = document.querySelector("#prayerProgress");
+
+function renderOffsetSettings() {
+  const list = document.querySelector("#offsetSettingsList");
+  list.innerHTML = prayers.filter((prayer) => prayer.key !== "terbit").map((prayer) => `
+    <div class="offset-row">
+      <label for="offset-${prayer.key}">${prayer.name}</label>
+      <input id="offset-${prayer.key}" data-offset-key="${prayer.key}" type="number" min="1" max="60" step="1" value="${prayer.offset}" aria-label="Jeda iqamah ${prayer.name} dalam menit" />
+    </div>`).join("");
+}
+
+function saveOffset(key, value) {
+  const offset = Math.min(60, Math.max(1, Number(value) || 1));
+  const target = prayers.find((prayer) => prayer.key === key);
+  if (!target) return;
+  target.offset = offset;
+  target.iqamah = addMinutes(target.time, offset);
+  const offsets = Object.fromEntries(prayers.filter((prayer) => prayer.key !== "terbit").map((prayer) => [prayer.key, prayer.offset]));
+  localStorage.setItem("ar-razqa-iqamah-offsets", JSON.stringify(offsets));
+  updateClock();
+}
 
 function minutes(value) {
   const [hour, minute] = value.split(":").map(Number);
@@ -160,6 +183,11 @@ document.querySelector("#closeSettings").addEventListener("click", () => documen
 document.querySelector("#tickerToggle").addEventListener("click", (event) => { const text = document.querySelector("#tickerText"); text.classList.toggle("paused"); event.currentTarget.textContent = text.classList.contains("paused") ? "▶" : "Ⅱ"; });
 document.querySelector("#autoSlideToggle").addEventListener("change", (event) => { autoSlide = event.target.checked; });
 document.querySelector("#tickerVisibility").addEventListener("change", (event) => { document.querySelector(".ticker-bar").style.display = event.target.checked ? "grid" : "none"; });
+document.querySelector("#offsetSettingsList").addEventListener("change", (event) => {
+  if (!event.target.matches("[data-offset-key]")) return;
+  saveOffset(event.target.dataset.offsetKey, event.target.value);
+  event.target.value = prayers.find((prayer) => prayer.key === event.target.dataset.offsetKey).offset;
+});
 let hadithIndex = 0;
 const tickerText = document.querySelector("#tickerText");
 tickerText.addEventListener("animationiteration", () => {
@@ -168,6 +196,7 @@ tickerText.addEventListener("animationiteration", () => {
 });
 
 renderSlide();
+renderOffsetSettings();
 updateClock();
 loadPrayerTimes();
 setInterval(loadPrayerTimes, 30 * 60 * 1000);
