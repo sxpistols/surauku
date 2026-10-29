@@ -4,14 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#071521" />
-    <title>Masjid Al-Hikmah — Papan Informasi</title>
+    <title>Masjid Ar-Razqa - DMVS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="screen" aria-label="Papan informasi Masjid Al-Hikmah">
+    <main class="screen" aria-label="Papan informasi Masjid Ar-Razqa - DMVS">
       <header class="topbar">
         <div class="brand-lockup">
           <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -21,8 +21,11 @@
             <p class="brand-subtitle">Perumahan DM Village Sudimoro, Sewon, Bantul - Yogyakarta</p>
           </div>
         </div>
-        <div class="location"><span class="live-dot"></span> Bantul, DI Yogyakarta <span class="divider"></span> <span id="topbarDate">Kamis, 29 Oktober 2026</span></div>
         <div class="top-actions">
+          <div class="location">
+            <div class="location-top"><span class="live-dot"></span><span>Bantul, DI Yogyakarta</span></div>
+            <div class="location-dates"><span id="topbarDate">Kamis, 29 Oktober 2026</span><span id="topbarHijri">18 Jumadilawal 1448 H</span></div>
+          </div>
           <button class="icon-button" id="fullscreenButton" title="Layar penuh" aria-label="Layar penuh">⛶</button>
           <button class="icon-button" id="settingsButton" title="Tampilkan pengaturan" aria-label="Tampilkan pengaturan">⚙</button>
         </div>
@@ -63,7 +66,7 @@
                 <button class="round-control" id="nextSlide" aria-label="Slide berikutnya">›</button>
               </div>
             </div>
-            <div class="slide-index" id="slideIndex">01 / 03</div>
+            <div class="slide-index" id="slideIndex">01 / 05</div>
           </div>
 
           <div class="stage-lower">
@@ -84,11 +87,21 @@
       </section>
 
       <footer class="ticker-bar">
-        <div class="ticker-label"><span class="ticker-icon">م</span><span>HADITS HARI INI</span></div>
-        <div class="ticker-window"><div class="ticker-text" id="tickerText">Shalat berjamaah lebih utama dua puluh tujuh derajat daripada shalat sendirian. — HR. Bukhari dan Muslim</div></div>
+        <div class="ticker-label"><span class="ticker-icon">م</span><span>PENGINGAT JAMAah</span></div>
+        <div class="ticker-window"><div class="ticker-text" id="tickerText">Pengingat: nonaktifkan notifikasi handphone · tidak berisik · perbanyak zikir · jaga dan luruskan shaf · jaga kebersihan · jaga kenyamanan jamaah lain</div></div>
         <button class="ticker-toggle" id="tickerToggle" aria-label="Jeda running text">Ⅱ</button>
       </footer>
     </main>
+
+    <section class="prayer-mode" id="prayerMode" aria-hidden="true">
+      <div class="prayer-mode-content">
+        <p class="prayer-mode-kicker">WAKTU SHALAT</p>
+        <h2 id="prayerModeName">ISYA</h2>
+        <div class="prayer-mode-message">Mohon merapatkan dan meluruskan shaf.<br />Mari shalat dengan tenang dan khusyu.</div>
+        <div class="prayer-mode-countdown" id="prayerModeCountdown">10:00</div>
+        <p class="prayer-mode-note">Layar informasi akan kembali setelah waktu ini selesai</p>
+      </div>
+    </section>
 
     <aside class="settings-drawer" id="settingsDrawer" aria-hidden="true">
       <div class="drawer-heading"><div><p class="section-kicker">PENGATURAN LAYAR</p><h2>Mode tampilan</h2></div><button class="close-button" id="closeSettings" aria-label="Tutup pengaturan">×</button></div>

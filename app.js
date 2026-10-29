@@ -18,6 +18,11 @@ const slides = [
   { title: "Doa dan ketenangan di sekitar Ka'bah", image: "https://images.unsplash.com/photo-1564121211835-e88c852648ab?auto=format&fit=crop&w=1600&q=80" }
 ];
 
+for (let index = slides.length - 1; index > 0; index -= 1) {
+  const randomIndex = Math.floor(Math.random() * (index + 1));
+  [slides[index], slides[randomIndex]] = [slides[randomIndex], slides[index]];
+}
+
 const hadiths = [
   { arabic: "صَلَاةُ الْجَمَاعَةِ أَفْضَلُ مِنْ صَلَاةِ الْفَذِّ بِسَبْعٍ وَعِشْرِينَ دَرَجَةً", translation: "Shalat berjamaah lebih utama dua puluh tujuh derajat daripada shalat sendirian.", source: "HR. Bukhari dan Muslim" },
   { arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى", translation: "Sesungguhnya amal itu tergantung niatnya, dan setiap orang mendapatkan sesuai dengan apa yang ia niatkan.", source: "HR. Bukhari dan Muslim" },
@@ -118,6 +123,28 @@ function updateClock() {
   clock.textContent = time;
   document.querySelector("#gregorianDate").textContent = now.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   document.querySelector("#topbarDate").textContent = now.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short", year: "numeric" });
+  let hijriDate = "Kalender Hijriah";
+  try {
+    hijriDate = new Intl.DateTimeFormat("id-ID-u-ca-islamic-umalqura", { day: "numeric", month: "long", year: "numeric" }).format(now).replace(" AH", " H");
+  } catch {
+    // Browser TV lama mungkin tidak menyediakan kalender Umm al-Qura.
+  }
+  document.querySelector("#topbarHijri").textContent = hijriDate;
+
+  const prayerMode = document.querySelector("#prayerMode");
+  const prayerModePrayer = prayers.find((prayer) => prayer.iqamah !== "—" && secondsFromTime(prayer.iqamah, now) <= 0 && secondsFromTime(addMinutes(prayer.iqamah, 10), now) > 0);
+  if (prayerModePrayer) {
+    const remaining = Math.max(0, secondsFromTime(addMinutes(prayerModePrayer.iqamah, 10), now));
+    const minutesLeft = Math.floor(remaining / 60).toString().padStart(2, "0");
+    const secondsLeft = (remaining % 60).toString().padStart(2, "0");
+    prayerMode.classList.add("active");
+    prayerMode.setAttribute("aria-hidden", "false");
+    document.querySelector("#prayerModeName").textContent = prayerModePrayer.name.toUpperCase();
+    document.querySelector("#prayerModeCountdown").textContent = `${minutesLeft}:${secondsLeft}`;
+  } else {
+    prayerMode.classList.remove("active");
+    prayerMode.setAttribute("aria-hidden", "true");
+  }
 
   const iqamahPrayer = prayers.find((prayer) => prayer.iqamah !== "—" && secondsFromTime(prayer.time, now) <= 0 && secondsFromTime(prayer.iqamah, now) > 0);
   const stageVisual = document.querySelector("#stageVisual");
@@ -193,12 +220,7 @@ document.querySelector("#offsetSettingsList").addEventListener("change", (event)
   saveOffset(event.target.dataset.offsetKey, event.target.value);
   event.target.value = prayers.find((prayer) => prayer.key === event.target.dataset.offsetKey).offset;
 });
-let hadithIndex = 0;
 const tickerText = document.querySelector("#tickerText");
-tickerText.addEventListener("animationiteration", () => {
-  hadithIndex = (hadithIndex + 1) % hadiths.length;
-  tickerText.textContent = `${hadiths[hadithIndex].translation} — ${hadiths[hadithIndex].source}`;
-});
 
 renderSlide();
 renderOffsetSettings();
