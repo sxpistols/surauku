@@ -11,11 +11,11 @@ const savedOffsets = JSON.parse(localStorage.getItem("ar-razqa-iqamah-offsets") 
 if (savedOffsets) prayers = prayers.map((prayer) => ({ ...prayer, offset: savedOffsets[prayer.key] ?? prayer.offset }));
 
 const slides = [
-  { title: "Ka'bah dalam cahaya pagi", image: "https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?auto=format&fit=crop&w=1600&q=80" },
-  { title: "Menghadap Baitullah", image: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1600&q=80" },
-  { title: "Malam yang teduh di Makkah", image: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1600&q=80" },
-  { title: "Langkah menuju Masjidil Haram", image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=1600&q=80" },
-  { title: "Doa dan ketenangan di sekitar Ka'bah", image: "https://images.unsplash.com/photo-1564121211835-e88c852648ab?auto=format&fit=crop&w=1600&q=80" }
+  { image: "https://images.unsplash.com/photo-1516275860772-794f83076e30?auto=format&fit=crop&w=1600&q=80", source: "https://unsplash.com/photos/brown-and-black-dome-building-nTE88akjSos" },
+  { image: "https://images.unsplash.com/photo-1588884492958-4cac1f90f647?auto=format&fit=crop&w=1600&q=80", source: "https://unsplash.com/photos/beige-and-green-dome-building-under-blue-sky-during-daytime-jjeLktIN8Ak" },
+  { image: "https://images.unsplash.com/photo-1590108589108-3600131de843?auto=format&fit=crop&w=1600&q=80", source: "https://unsplash.com/photos/kaaba-and-crowd-in-mecca-W0FhhtnMd8k" },
+  { image: "https://images.unsplash.com/photo-1761939997990-7e1635db43c5?auto=format&fit=crop&w=1600&q=80", source: "https://unsplash.com/photos/person-sitting-in-a-large-sunlit-hall-_xdnYkEZkF0" },
+  { image: "https://images.unsplash.com/photo-1626664649936-69a273065389?auto=format&fit=crop&w=1600&q=80", source: "https://unsplash.com/photos/silhouette-of-building-during-sunset-x2-vCtkTMCg" }
 ];
 
 for (let index = slides.length - 1; index > 0; index -= 1) {
@@ -37,6 +37,11 @@ const API_CONFIG = {
   timezone: "Asia/Jakarta"
 };
 
+const displaySettings = JSON.parse(localStorage.getItem("ar-razqa-display-settings") || "null") || { slideInterval: 45, tickerSpeed: 38 };
+let slideIntervalSeconds = Number(displaySettings.slideInterval) || 45;
+let tickerSpeedSeconds = Number(displaySettings.tickerSpeed) || 38;
+const fridayInfo = JSON.parse(localStorage.getItem("ar-razqa-friday-info") || "null") || { imam: "", muadzin: "" };
+
 const prayerList = document.querySelector("#prayerList");
 const clock = document.querySelector("#clock");
 const countdown = document.querySelector("#countdown");
@@ -52,6 +57,32 @@ function renderOffsetSettings() {
       <label for="offset-${prayer.key}">${prayer.name}</label>
       <input id="offset-${prayer.key}" data-offset-key="${prayer.key}" type="number" min="1" max="60" step="1" value="${prayer.offset}" aria-label="Jeda iqamah ${prayer.name} dalam menit" />
     </div>`).join("");
+}
+
+function isFridayWindow(now = new Date()) {
+  const minutesNow = now.getHours() * 60 + now.getMinutes();
+  return now.getDay() === 5 && minutesNow >= 360 && minutesNow < 720;
+}
+
+let fridayWindowState = null;
+function renderFridaySettings(now = new Date()) {
+  const container = document.querySelector("#fridaySettings");
+  const active = isFridayWindow(now);
+  if (active === fridayWindowState) return;
+  fridayWindowState = active;
+  container.hidden = !active;
+  if (active) {
+    document.querySelector("#fridayImamInput").value = fridayInfo.imam;
+    document.querySelector("#fridayMuadzinInput").value = fridayInfo.muadzin;
+    if (slide === 4) renderSlide();
+  }
+}
+
+function saveFridayInfo() {
+  fridayInfo.imam = document.querySelector("#fridayImamInput").value.trim();
+  fridayInfo.muadzin = document.querySelector("#fridayMuadzinInput").value.trim();
+  localStorage.setItem("ar-razqa-friday-info", JSON.stringify(fridayInfo));
+  renderSlide();
 }
 
 function saveOffset(key, value) {
@@ -130,6 +161,7 @@ function updateClock() {
     // Browser TV lama mungkin tidak menyediakan kalender Umm al-Qura.
   }
   document.querySelector("#topbarHijri").textContent = hijriDate;
+  renderFridaySettings(now);
 
   const prayerMode = document.querySelector("#prayerMode");
   const prayerModePrayer = prayers.find((prayer) => prayer.iqamah !== "—" && secondsFromTime(prayer.iqamah, now) <= 0 && secondsFromTime(addMinutes(prayer.iqamah, 10), now) > 0);
@@ -194,18 +226,25 @@ function updateClock() {
 
 let slide = 0;
 let autoSlide = true;
+let slideElapsed = 0;
 function renderSlide() {
   const item = slides[slide];
   const hadith = hadiths[slide];
   const visual = document.querySelector("#stageVisual");
   visual.style.backgroundImage = `url("${item.image}")`;
-  document.querySelector("#slideHadithArabic").textContent = hadith.arabic;
-  document.querySelector("#slideHadithTranslation").textContent = `“${hadith.translation}”`;
-  document.querySelector("#slideHadithSource").textContent = `— ${hadith.source}`;
+  if (slide === 4 && isFridayWindow()) {
+    document.querySelector("#slideHadithArabic").textContent = "صَلَاةُ الْجُمُعَةِ";
+    document.querySelector("#slideHadithTranslation").textContent = fridayInfo.imam || fridayInfo.muadzin ? `Imam & Khatib: ${fridayInfo.imam || "—"} · Muadzin: ${fridayInfo.muadzin || "—"}` : "Informasi Imam, Khatib, dan Muadzin dapat diatur melalui menu Pengaturan.";
+    document.querySelector("#slideHadithSource").textContent = "Informasi Shalat Jumat · Masjid Ar-Razqa";
+  } else {
+    document.querySelector("#slideHadithArabic").textContent = hadith.arabic;
+    document.querySelector("#slideHadithTranslation").textContent = `“${hadith.translation}”`;
+    document.querySelector("#slideHadithSource").textContent = `— ${hadith.source}`;
+  }
   document.querySelector("#slideIndex").textContent = `${String(slide + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
   document.querySelector("#slideDots").innerHTML = slides.map((_, index) => `<span class="slide-dot ${index === slide ? "active" : ""}"></span>`).join("");
 }
-function changeSlide(direction) { slide = (slide + direction + slides.length) % slides.length; renderSlide(); }
+function changeSlide(direction) { slide = (slide + direction + slides.length) % slides.length; slideElapsed = 0; renderSlide(); }
 
 document.querySelector("#previousSlide").addEventListener("click", () => changeSlide(-1));
 document.querySelector("#nextSlide").addEventListener("click", () => changeSlide(1));
@@ -215,6 +254,23 @@ document.querySelector("#closeSettings").addEventListener("click", () => documen
 document.querySelector("#tickerToggle").addEventListener("click", (event) => { const text = document.querySelector("#tickerText"); text.classList.toggle("paused"); event.currentTarget.textContent = text.classList.contains("paused") ? "▶" : "Ⅱ"; });
 document.querySelector("#autoSlideToggle").addEventListener("change", (event) => { autoSlide = event.target.checked; });
 document.querySelector("#tickerVisibility").addEventListener("change", (event) => { document.querySelector(".ticker-bar").style.display = event.target.checked ? "grid" : "none"; });
+document.querySelector("#slideIntervalInput").value = slideIntervalSeconds;
+document.querySelector("#tickerSpeedInput").value = tickerSpeedSeconds;
+document.querySelector("#tickerText").style.animationDuration = `${tickerSpeedSeconds}s`;
+document.querySelector("#slideIntervalInput").addEventListener("change", (event) => {
+  slideIntervalSeconds = Math.min(300, Math.max(10, Number(event.target.value) || 45));
+  slideElapsed = 0;
+  event.target.value = slideIntervalSeconds;
+  localStorage.setItem("ar-razqa-display-settings", JSON.stringify({ slideInterval: slideIntervalSeconds, tickerSpeed: tickerSpeedSeconds }));
+});
+document.querySelector("#tickerSpeedInput").addEventListener("change", (event) => {
+  tickerSpeedSeconds = Math.min(180, Math.max(10, Number(event.target.value) || 38));
+  event.target.value = tickerSpeedSeconds;
+  document.querySelector("#tickerText").style.animationDuration = `${tickerSpeedSeconds}s`;
+  localStorage.setItem("ar-razqa-display-settings", JSON.stringify({ slideInterval: slideIntervalSeconds, tickerSpeed: tickerSpeedSeconds }));
+});
+document.querySelector("#fridayImamInput").addEventListener("input", saveFridayInfo);
+document.querySelector("#fridayMuadzinInput").addEventListener("input", saveFridayInfo);
 document.querySelector("#offsetSettingsList").addEventListener("change", (event) => {
   if (!event.target.matches("[data-offset-key]")) return;
   saveOffset(event.target.dataset.offsetKey, event.target.value);
@@ -224,8 +280,9 @@ const tickerText = document.querySelector("#tickerText");
 
 renderSlide();
 renderOffsetSettings();
+renderFridaySettings();
 updateClock();
 loadPrayerTimes();
 setInterval(loadPrayerTimes, 30 * 60 * 1000);
 setInterval(updateClock, 1000);
-setInterval(() => { if (autoSlide) changeSlide(1); }, 45000);
+setInterval(() => { if (autoSlide && ++slideElapsed >= slideIntervalSeconds) changeSlide(1); }, 1000);

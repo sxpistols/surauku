@@ -116,6 +116,11 @@ h2 { margin-bottom: 0; font-family: "Playfair Display", serif; font-size: clamp(
 .setting-row input:checked + i { background: rgba(75,200,193,.35); }
 .setting-row input:checked + i::after { left: 21px; background: var(--cyan); }
 .offset-settings { padding-top: 24px; }
+.timing-settings { padding-top: 24px; }
+.timing-row { min-height: 42px; display: grid; grid-template-columns: 1fr 58px auto; align-items: center; gap: 8px; border-top: 1px solid var(--line); color: var(--muted-strong); font-size: 12px; }
+.timing-row input { width: 58px; padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; outline: none; background: rgba(255,255,255,.05); color: var(--ink); text-align: center; }
+.timing-row input:focus { border-color: var(--amber); }
+.timing-row span { color: var(--muted); font-size: 10px; white-space: nowrap; }
 .offset-heading { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 9px; color: var(--muted-strong); font-size: 13px; }
 .offset-heading .section-kicker { margin-bottom: 5px; }
 .offset-heading > span { color: var(--muted); font-size: 10px; }
@@ -126,6 +131,12 @@ h2 { margin-bottom: 0; font-family: "Playfair Display", serif; font-size: clamp(
 .offset-row input::-webkit-inner-spin-button, .offset-row input::-webkit-outer-spin-button { opacity: 1; }
 .drawer-note { margin-top: 24px; padding: 15px; color: var(--muted); background: rgba(255,255,255,.04); border-radius: 8px; font-size: 12px; line-height: 1.6; }
 .drawer-note code { color: var(--amber); }
+.friday-settings { padding-top: 24px; }
+.friday-field { display: block; margin-top: 10px; color: var(--muted-strong); font-size: 11px; }
+.friday-field input { width: 100%; margin-top: 6px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 6px; outline: none; background: rgba(255,255,255,.05); color: var(--ink); }
+.friday-field input:focus { border-color: var(--amber); }
+.friday-field input::placeholder { color: #617681; }
+.friday-hint { margin: 10px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
 @media (max-width: 720px) { body { overflow: auto; } .screen { min-height: 100vh; height: auto; } .topbar { padding: 16px 5vw; gap: 16px; flex-wrap: wrap; } .top-actions { margin-left: auto; } .location { order: 0; } .location-dates { flex-direction: column; align-items: flex-end; gap: 1px; } .dashboard { grid-template-columns: 1fr; } .schedule-panel { padding: 25px 5vw 20px; } .main-stage { padding: 20px 5vw; } .stage-visual { min-height: 390px; } .ticker-bar { grid-template-columns: auto 1fr 40px; padding: 0 5vw; gap: 12px; } }
 @media (max-width: 560px) { .top-actions { margin-left: auto; } .stage-lower { grid-template-columns: 1fr; } .prayer-row { min-height: 62px; } .ticker-label span:last-child { display: none; } }
 @media (max-height: 760px) and (min-width: 721px) {
