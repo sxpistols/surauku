@@ -37,9 +37,9 @@ const API_CONFIG = {
   timezone: "Asia/Jakarta"
 };
 
-const displaySettings = JSON.parse(localStorage.getItem("ar-razqa-display-settings") || "null") || { slideInterval: 45, tickerSpeed: 38 };
+const displaySettings = JSON.parse(localStorage.getItem("ar-razqa-display-settings") || "null") || { slideInterval: 45, tickerSpeed: 90 };
 let slideIntervalSeconds = Number(displaySettings.slideInterval) || 45;
-let tickerSpeedSeconds = Number(displaySettings.tickerSpeed) || 38;
+let tickerSpeedSeconds = Number(displaySettings.tickerSpeed) || 90;
 const fridayInfo = JSON.parse(localStorage.getItem("ar-razqa-friday-info") || "null") || { imam: "", muadzin: "" };
 
 const prayerList = document.querySelector("#prayerList");
@@ -59,15 +59,26 @@ function renderOffsetSettings() {
     </div>`).join("");
 }
 
-function isFridayWindow(now = new Date()) {
+function isFridayInfoWindow(now = new Date()) {
   const minutesNow = now.getHours() * 60 + now.getMinutes();
-  return now.getDay() === 5 && minutesNow >= 360 && minutesNow < 720;
+  return (now.getDay() === 4 && minutesNow >= 1080) || (now.getDay() === 5 && minutesNow < 720);
+}
+
+function resetFridayInfoAfterNoon(now = new Date()) {
+  if (now.getDay() !== 5 || now.getHours() * 60 + now.getMinutes() < 720) return;
+  const resetKey = now.toLocaleDateString("en-CA");
+  if (localStorage.getItem("ar-razqa-friday-reset-date") === resetKey) return;
+  fridayInfo.imam = "";
+  fridayInfo.muadzin = "";
+  localStorage.setItem("ar-razqa-friday-info", JSON.stringify(fridayInfo));
+  localStorage.setItem("ar-razqa-friday-reset-date", resetKey);
+  if (slide === 4) renderSlide();
 }
 
 let fridayWindowState = null;
 function renderFridaySettings(now = new Date()) {
   const container = document.querySelector("#fridaySettings");
-  const active = isFridayWindow(now);
+  const active = isFridayInfoWindow(now);
   if (active === fridayWindowState) return;
   fridayWindowState = active;
   container.hidden = !active;
@@ -149,6 +160,7 @@ function secondsFromTime(value, now) {
 
 function updateClock() {
   const now = new Date();
+  resetFridayInfoAfterNoon(now);
   const currentMinutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
   const time = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
   clock.textContent = time;
@@ -232,7 +244,7 @@ function renderSlide() {
   const hadith = hadiths[slide];
   const visual = document.querySelector("#stageVisual");
   visual.style.backgroundImage = `url("${item.image}")`;
-  if (slide === 4 && isFridayWindow()) {
+  if (slide === 4 && isFridayInfoWindow()) {
     document.querySelector("#slideHadithArabic").textContent = "صَلَاةُ الْجُمُعَةِ";
     document.querySelector("#slideHadithTranslation").textContent = fridayInfo.imam || fridayInfo.muadzin ? `Imam & Khatib: ${fridayInfo.imam || "—"} · Muadzin: ${fridayInfo.muadzin || "—"}` : "Informasi Imam, Khatib, dan Muadzin dapat diatur melalui menu Pengaturan.";
     document.querySelector("#slideHadithSource").textContent = "Informasi Shalat Jumat · Masjid Ar-Razqa";
@@ -264,7 +276,7 @@ document.querySelector("#slideIntervalInput").addEventListener("change", (event)
   localStorage.setItem("ar-razqa-display-settings", JSON.stringify({ slideInterval: slideIntervalSeconds, tickerSpeed: tickerSpeedSeconds }));
 });
 document.querySelector("#tickerSpeedInput").addEventListener("change", (event) => {
-  tickerSpeedSeconds = Math.min(180, Math.max(10, Number(event.target.value) || 38));
+  tickerSpeedSeconds = Math.min(180, Math.max(10, Number(event.target.value) || 90));
   event.target.value = tickerSpeedSeconds;
   document.querySelector("#tickerText").style.animationDuration = `${tickerSpeedSeconds}s`;
   localStorage.setItem("ar-razqa-display-settings", JSON.stringify({ slideInterval: slideIntervalSeconds, tickerSpeed: tickerSpeedSeconds }));
