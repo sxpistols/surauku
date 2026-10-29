@@ -19,9 +19,11 @@ const slides = [
 ];
 
 const hadiths = [
-  "Shalat berjamaah lebih utama dua puluh tujuh derajat daripada shalat sendirian. — HR. Bukhari dan Muslim",
-  "Sebaik-baik kalian adalah yang paling bermanfaat bagi orang lain. — HR. Ahmad",
-  "Barangsiapa menempuh jalan untuk mencari ilmu, Allah mudahkan baginya jalan menuju surga. — HR. Muslim"
+  { arabic: "صَلَاةُ الْجَمَاعَةِ أَفْضَلُ مِنْ صَلَاةِ الْفَذِّ بِسَبْعٍ وَعِشْرِينَ دَرَجَةً", translation: "Shalat berjamaah lebih utama dua puluh tujuh derajat daripada shalat sendirian.", source: "HR. Bukhari dan Muslim" },
+  { arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى", translation: "Sesungguhnya amal itu tergantung niatnya, dan setiap orang mendapatkan sesuai dengan apa yang ia niatkan.", source: "HR. Bukhari dan Muslim" },
+  { arabic: "مَنْ لَا يَرْحَمْ لَا يُرْحَمْ", translation: "Barangsiapa tidak menyayangi, maka ia tidak akan disayangi.", source: "HR. Bukhari dan Muslim" },
+  { arabic: "خَيْرُ النَّاسِ أَنْفَعُهُمْ لِلنَّاسِ", translation: "Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lainnya.", source: "HR. Ath-Thabrani" },
+  { arabic: "مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ", translation: "Barangsiapa menempuh jalan untuk mencari ilmu, Allah mudahkan baginya jalan menuju surga.", source: "HR. Muslim" }
 ];
 
 const API_CONFIG = {
@@ -167,9 +169,12 @@ let slide = 0;
 let autoSlide = true;
 function renderSlide() {
   const item = slides[slide];
+  const hadith = hadiths[slide];
   const visual = document.querySelector("#stageVisual");
   visual.style.backgroundImage = `url("${item.image}")`;
-  document.querySelector("#slideTitle").textContent = item.title;
+  document.querySelector("#slideHadithArabic").textContent = hadith.arabic;
+  document.querySelector("#slideHadithTranslation").textContent = `“${hadith.translation}”`;
+  document.querySelector("#slideHadithSource").textContent = `— ${hadith.source}`;
   document.querySelector("#slideIndex").textContent = `${String(slide + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
   document.querySelector("#slideDots").innerHTML = slides.map((_, index) => `<span class="slide-dot ${index === slide ? "active" : ""}"></span>`).join("");
 }
@@ -192,7 +197,7 @@ let hadithIndex = 0;
 const tickerText = document.querySelector("#tickerText");
 tickerText.addEventListener("animationiteration", () => {
   hadithIndex = (hadithIndex + 1) % hadiths.length;
-  tickerText.textContent = hadiths[hadithIndex];
+  tickerText.textContent = `${hadiths[hadithIndex].translation} — ${hadiths[hadithIndex].source}`;
 });
 
 renderSlide();
@@ -201,4 +206,4 @@ updateClock();
 loadPrayerTimes();
 setInterval(loadPrayerTimes, 30 * 60 * 1000);
 setInterval(updateClock, 1000);
-setInterval(() => { if (autoSlide) changeSlide(1); }, 10000);
+setInterval(() => { if (autoSlide) changeSlide(1); }, 45000);
