@@ -19,7 +19,7 @@ export interface PrayerEntry {
 }
 
 export async function getSchedule(cityId: string, city: string, date: string): Promise<DaySchedule> {
-  const res = await fetchPrayerTimes({ data: { cityId, city, date } });
+  const res = await fetchPrayerTimes({ cityId, city, date });
   return { date, city, source: res.source, fetchedAt: Date.now(), times: res.times };
 }
 
