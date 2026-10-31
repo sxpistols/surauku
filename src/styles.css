@@ -1,0 +1,120 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Marcellus", Georgia, serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+  --font-arabic: "Traditional Arabic", "Noto Naskh Arabic", "Geeza Pro", serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
+  --color-teal: var(--teal);
+  --color-navy-deep: var(--navy-deep);
+  --color-navy-panel: var(--navy-panel);
+}
+
+/* Navy dasar, emas untuk waktu aktif, teal sebagai aksen */
+:root {
+  --radius: 0.75rem;
+  --navy-deep: oklch(0.17 0.045 262);
+  --navy-panel: oklch(0.22 0.05 260);
+  --background: var(--navy-deep);
+  --foreground: oklch(0.97 0.01 90);
+  --card: var(--navy-panel);
+  --card-foreground: oklch(0.97 0.01 90);
+  --popover: oklch(0.21 0.05 260);
+  --popover-foreground: oklch(0.97 0.01 90);
+  --primary: oklch(0.8 0.15 80);
+  --primary-foreground: oklch(0.18 0.04 262);
+  --secondary: oklch(0.28 0.05 258);
+  --secondary-foreground: oklch(0.97 0.01 90);
+  --muted: oklch(0.27 0.045 258);
+  --muted-foreground: oklch(0.78 0.03 250);
+  --accent: oklch(0.3 0.06 220);
+  --accent-foreground: oklch(0.97 0.01 90);
+  --destructive: oklch(0.65 0.2 27);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.38 0.05 255 / 60%);
+  --input: oklch(0.38 0.05 255);
+  --ring: oklch(0.8 0.15 80);
+  --gold: oklch(0.82 0.15 80);
+  --gold-foreground: oklch(0.18 0.04 262);
+  --teal: oklch(0.74 0.12 190);
+  --slide-shade: oklch(0.14 0.025 262 / 76%);
+  --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23d9a441' stroke-opacity='0.07' stroke-width='1'%3E%3Cpath d='M40 4l10 26 26 10-26 10-10 26-10-26L4 40l26-10z'/%3E%3Ccircle cx='40' cy='40' r='14'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html, body { height: 100%; }
+  body {
+    background-color: var(--color-background);
+    background-image: var(--pattern);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+  :focus-visible { outline: 4px solid var(--gold); outline-offset: 3px; }
+}
+
+@utility tv-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: clamp(44px, 3.2vw, 64px);
+  height: clamp(44px, 3.2vw, 64px);
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--navy-panel) 85%, transparent);
+  color: var(--foreground);
+  transition: background 0.2s, color 0.2s;
+  &:hover { background: var(--secondary); color: var(--gold); }
+}
+
+@utility gold-rule {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.slide-overlay { background: var(--slide-shade); }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+@utility animate-marquee {
+  animation-name: marquee;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--gold) 45%, transparent); }
+  50% { box-shadow: 0 0 0 0.6vw color-mix(in oklab, var(--gold) 0%, transparent); }
+}
+@utility animate-pulse-gold { animation: pulse-gold 2.4s ease-in-out infinite; }

@@ -1,0 +1,11 @@
+{
+  "name": "Masjid Ar-Razqa",
+  "short_name": "Ar-Razqa",
+  "description": "Papan informasi digital Masjid Ar-Razqa",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0d1530",
+  "theme_color": "#0d1530",
+  "icons": [{ "src": "/favicon.ico", "sizes": "64x64", "type": "image/x-icon" }]
+}
