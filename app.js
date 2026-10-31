@@ -11,11 +11,11 @@ const savedOffsets = JSON.parse(localStorage.getItem("ar-razqa-iqamah-offsets") 
 if (savedOffsets) prayers = prayers.map((prayer) => ({ ...prayer, offset: savedOffsets[prayer.key] ?? prayer.offset }));
 
 const slides = [
-  { image: "https://images.unsplash.com/photo-1516275860772-794f83076e30?auto=format&fit=crop&w=1600&q=80", source: "https://unsplash.com/photos/brown-and-black-dome-building-nTE88akjSos" },
-  { image: "https://images.unsplash.com/photo-1588884492958-4cac1f90f647?auto=format&fit=crop&w=1600&q=80", source: "https://unsplash.com/photos/beige-and-green-dome-building-under-blue-sky-during-daytime-jjeLktIN8Ak" },
-  { image: "https://images.unsplash.com/photo-1590108589108-3600131de843?auto=format&fit=crop&w=1600&q=80", source: "https://unsplash.com/photos/kaaba-and-crowd-in-mecca-W0FhhtnMd8k" },
-  { image: "https://images.unsplash.com/photo-1761939997990-7e1635db43c5?auto=format&fit=crop&w=1600&q=80", source: "https://unsplash.com/photos/person-sitting-in-a-large-sunlit-hall-_xdnYkEZkF0" },
-  { image: "https://images.unsplash.com/photo-1626664649936-69a273065389?auto=format&fit=crop&w=1600&q=80", source: "https://unsplash.com/photos/silhouette-of-building-during-sunset-x2-vCtkTMCg" }
+  { image: "assets/slide-1-Bje0_KEf.jpg", source: "https://unsplash.com/photos/brown-and-black-dome-building-nTE88akjSos" },
+  { image: "assets/slide-2-DbK9_CEc.jpg", source: "https://unsplash.com/photos/beige-and-green-dome-building-under-blue-sky-during-daytime-jjeLktIN8Ak" },
+  { image: "assets/slide-3-CQU5P_W6.jpg", source: "https://unsplash.com/photos/kaaba-and-crowd-in-mecca-W0FhhtnMd8k" },
+  { image: "assets/slide-4-u27eX2s_.jpg", source: "https://unsplash.com/photos/person-sitting-in-a-large-sunlit-hall-_xdnYkEZkF0" },
+  { image: "assets/slide-5-BWOZqoKx.jpg", source: "https://unsplash.com/photos/silhouette-of-building-during-sunset-x2-vCtkTMCg" }
 ];
 
 for (let index = slides.length - 1; index > 0; index -= 1) {
@@ -48,7 +48,6 @@ const countdown = document.querySelector("#countdown");
 const countdownNote = document.querySelector("#countdownNote");
 const nextPrayerName = document.querySelector("#nextPrayerName");
 const nextPrayerTime = document.querySelector("#nextPrayerTime");
-const prayerProgress = document.querySelector("#prayerProgress");
 
 function renderOffsetSettings() {
   const list = document.querySelector("#offsetSettingsList");
@@ -114,11 +113,11 @@ function minutes(value) {
 
 function renderPrayers(activeName) {
   prayerList.innerHTML = prayers.map((prayer) => `
-    <div class="prayer-row ${prayer.name === activeName ? "active" : ""}">
-      <div class="prayer-symbol" aria-hidden="true">${prayer.symbol}</div>
-      <div><div class="prayer-name">${prayer.name}</div><div class="prayer-iqamah">${prayer.iqamah === "—" ? "Matahari terbit" : `IQAMAH ${prayer.iqamah}`}</div></div>
-      <div class="prayer-time">${prayer.time}</div>
-    </div>`).join("");
+    <li class="prayer-row ${prayer.name === activeName ? "active" : ""}">
+      <span class="prayer-main"><span class="prayer-symbol" aria-hidden="true">${prayer.symbol}</span><span class="prayer-name">${prayer.name}</span></span>
+      <span class="prayer-time">${prayer.time}</span>
+      <span class="prayer-iqamah">${prayer.iqamah}</span>
+    </li>`).join("");
 }
 
 function parseTime(value) {
@@ -147,6 +146,7 @@ async function loadPrayerTimes() {
     if (!schedule) throw new Error("Jadwal hari ini tidak tersedia");
     prayers = prayers.map((prayer) => ({ ...prayer, time: schedule[prayer.key] || prayer.time, iqamah: prayer.offset ? addMinutes(schedule[prayer.key] || prayer.time, prayer.offset) : "—" }));
     renderPrayers();
+    document.querySelector("#dataUpdatedAt").textContent = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
   } catch (error) {
     console.warn("Jadwal API tidak tersedia, memakai jadwal cadangan.", error);
   }
@@ -164,6 +164,7 @@ function updateClock() {
   const currentMinutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
   const time = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
   clock.textContent = time;
+  document.querySelector("#seconds").textContent = String(now.getSeconds()).padStart(2, "0");
   document.querySelector("#gregorianDate").textContent = now.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   document.querySelector("#topbarDate").textContent = now.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short", year: "numeric" });
   let hijriDate = "Kalender Hijriah";
@@ -206,7 +207,6 @@ function updateClock() {
     nextPrayerTime.textContent = iqamahPrayer.iqamah;
     countdown.textContent = `${mm}:${ss}`;
     countdownNote.textContent = `Mohon merapatkan dan meluruskan saf`;
-    prayerProgress.style.width = `${Math.min(100, Math.max(5, (1 - secondsToIqamah / (iqamahPrayer.offset * 60)) * 100))}%`;
   } else {
     stageVisual.classList.remove("iqamah-mode");
     nextKicker.textContent = "MENUJU WAKTU BERIKUTNYA";
@@ -227,12 +227,6 @@ function updateClock() {
     countdown.textContent = `${hours}:${mins}:${secs}`;
     countdownNote.textContent = `Setelah ${current.name} · persiapan menuju ${next.name}`;
   }
-  const start = minutes(current.time);
-  let span = minutes(next.time) - start;
-  if (span <= 0) span += 24 * 60;
-  let elapsed = currentMinutes - start;
-  if (elapsed < 0) elapsed += 24 * 60;
-  prayerProgress.style.width = `${Math.min(100, Math.max(5, (elapsed / span) * 100))}%`;
   renderPrayers(current.name);
 }
 
@@ -244,7 +238,9 @@ function renderSlide() {
   const hadith = hadiths[slide];
   const visual = document.querySelector("#stageVisual");
   visual.style.backgroundImage = `url("${item.image}")`;
-  if (slide === 4 && isFridayInfoWindow()) {
+  const fridayActive = slide === 4 && isFridayInfoWindow() && (fridayInfo.imam || fridayInfo.muadzin);
+  document.querySelector("#slideKicker").textContent = fridayActive ? "INFORMASI SHALAT JUMAT" : "HADITS HARI INI";
+  if (fridayActive) {
     document.querySelector("#slideHadithArabic").textContent = "صَلَاةُ الْجُمُعَةِ";
     document.querySelector("#slideHadithTranslation").textContent = fridayInfo.imam || fridayInfo.muadzin ? `Imam & Khatib: ${fridayInfo.imam || "—"} · Muadzin: ${fridayInfo.muadzin || "—"}` : "Informasi Imam, Khatib, dan Muadzin dapat diatur melalui menu Pengaturan.";
     document.querySelector("#slideHadithSource").textContent = "Informasi Shalat Jumat · Masjid Ar-Razqa";
