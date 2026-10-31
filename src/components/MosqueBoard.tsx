@@ -45,7 +45,12 @@ export function MosqueBoard() {
 
   const entries = useMemo(() => (schedule ? buildEntries(schedule.times, settings.offsets) : []), [schedule, settings.offsets]);
   const secOfDay = parts?.secOfDay ?? null;
-  const iqamah = useIqamahCountdown(entries, secOfDay);
+  const liveIqamah = useIqamahCountdown(entries, secOfDay);
+  const previewPrayer = entries.find((entry) => entry.key === "isya") ?? entries[0];
+  const previewIqamah = new URLSearchParams(window.location.search).get("preview") === "iqamah" && previewPrayer
+    ? { prayer: previewPrayer, remainingSec: 39 }
+    : null;
+  const iqamah = previewIqamah ?? liveIqamah;
   const active = secOfDay != null && entries.length ? currentPrayer(entries, Math.floor(secOfDay / 60)) : null;
 
   // Suara hanya bisa aktif setelah interaksi pertama (kebijakan browser/TV).
