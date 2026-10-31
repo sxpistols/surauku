@@ -125,7 +125,7 @@ export function MosqueBoard() {
       />
       <div className="gold-rule mx-[2vw]" />
 
-      <main className="grid min-h-0 flex-1 grid-cols-1 gap-[1.4vw] px-[2vw] py-[1.6vh] md:grid-cols-[minmax(0,34fr)_minmax(0,66fr)]">
+        <main className="grid min-h-0 flex-1 grid-cols-1 gap-[1.4vw] px-[2vw] py-[1.6vh] lg:grid-cols-[minmax(0,34fr)_minmax(0,66fr)]">
         <PrayerSchedule entries={entries} active={iqamah?.prayer.key ?? active} status={status} updatedAt={schedule?.fetchedAt ?? null} source={schedule?.source ?? null} scheduleDate={schedule?.date ?? null} today={parts?.date ?? null} />
 
         <section className="flex min-h-0 flex-col gap-[1.6vh]">

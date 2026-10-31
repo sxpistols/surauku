@@ -67,7 +67,7 @@ export function Slideshow({ slides, index, onIndex, autoplay, intervalSec, frida
             </div>
           ) : null}
         </div>
-        <div className="flex items-end justify-between gap-4">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="font-display text-lg lg:text-2xl">{s.friday ? s.caption : s.title}</p>
             {!s.friday && <p className="text-sm text-muted-foreground lg:text-base">{s.caption}</p>}

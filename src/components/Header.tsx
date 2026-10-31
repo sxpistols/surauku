@@ -25,7 +25,7 @@ export function Header({ now, isFullscreen, onToggleFullscreen, onOpenSettings, 
           {mosqueDescription}
         </p>
       </div>
-      <div className="hidden text-right md:block">
+      <div className="hidden text-right lg:block">
         <p className="flex items-center justify-end gap-2 text-[clamp(0.85rem,1.05vw,1.3rem)] font-semibold text-teal">
           <MapPin className="h-[1.1em] w-[1.1em]" /> {locationLabel}
         </p>

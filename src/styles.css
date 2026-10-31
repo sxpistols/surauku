@@ -118,3 +118,104 @@
   50% { box-shadow: 0 0 0 0.6vw color-mix(in oklab, var(--gold) 0%, transparent); }
 }
 @utility animate-pulse-gold { animation: pulse-gold 2.4s ease-in-out infinite; }
+
+/* The TV layout stays locked to the viewport; narrower devices get a real
+   stacked, scrollable layout so the schedule, stage, ticker, and settings
+   never disappear below the fold. */
+@media (max-width: 1023px) {
+  #root > div {
+    min-height: 100dvh;
+  }
+
+  #root > div > main {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+    height: auto;
+  }
+
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  #root > div {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  #root > div > header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1rem 1rem 0.8rem;
+  }
+
+  #root > div > header > div:first-of-type {
+    min-width: 0;
+  }
+
+  #root > div > main {
+    overflow: visible;
+    padding: 0.9rem 1rem 1rem;
+  }
+
+  #root > div > main > aside {
+    min-height: 23rem;
+  }
+
+  #root > div > main > section {
+    min-height: 30rem;
+  }
+
+  #root > div > footer {
+    min-height: 3.75rem;
+  }
+
+  #root > div > footer > div:first-child {
+    width: 34%;
+    min-width: 7.5rem;
+    font-size: 0.9rem;
+  }
+
+  #root > div > footer > div:nth-child(2) {
+    min-width: 0;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  #root > div > main {
+    overflow-y: auto;
+    padding-inline: 3vw;
+  }
+
+  #root > div > main > aside {
+    min-height: 20rem;
+  }
+
+  #root > div > main > section {
+    min-height: 31rem;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 1024px) {
+  #root > div > header {
+    padding-top: 0.8vh;
+    padding-bottom: 0.8vh;
+  }
+
+  #root > div > main {
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+  }
+
+  #root > div > footer {
+    min-height: 3.4rem;
+  }
+}
