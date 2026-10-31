@@ -286,6 +286,7 @@ document.querySelector("#offsetSettingsList").addEventListener("change", (event)
 });
 const tickerText = document.querySelector("#tickerText");
 
+renderPrayers();
 renderSlide();
 renderOffsetSettings();
 renderFridaySettings();
