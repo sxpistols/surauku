@@ -24,6 +24,8 @@ export function MosqueBoard() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [slide, setSlide] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const previewMode = new URLSearchParams(window.location.search).get("preview");
+  const isFridayPreview = previewMode === "friday";
 
   useEffect(() => setSettings(storage.loadSettings()), []);
   const updateSettings = useCallback((s: Settings) => {
@@ -39,7 +41,10 @@ export function MosqueBoard() {
     if (cleared !== settings.fridayOfficials) updateSettings({ ...settings, fridayOfficials: cleared });
   }, [now, settings, updateSettings]);
 
-  const fridayVisible = now ? showFridaySlide(now, schedule?.times.isya ?? null, settings.fridayOfficials) : false;
+  const previewOfficials = isFridayPreview
+    ? { ...settings.fridayOfficials, khatibImam: "Ust Imam", muadzin: "Ahmad" }
+    : settings.fridayOfficials;
+  const fridayVisible = isFridayPreview || (now ? showFridaySlide(now, schedule?.times.isya ?? null, settings.fridayOfficials) : false);
   const slides = useMemo(() => fridayVisible ? [...SLIDES, FRIDAY_SLIDE] : SLIDES, [fridayVisible]);
   useEffect(() => { setSlide((i) => i % slides.length); }, [slides.length]);
 
@@ -134,7 +139,14 @@ export function MosqueBoard() {
             {iqamah ? (
               <IqamahCountdown state={iqamah} />
             ) : (
-              <Slideshow slides={slides} index={slide} onIndex={setSlide} autoplay={settings.slideshowEnabled} intervalSec={settings.slideIntervalSec} fridayOfficials={settings.fridayOfficials} />
+              <Slideshow
+                slides={slides}
+                index={isFridayPreview ? slides.length - 1 : slide}
+                onIndex={setSlide}
+                autoplay={!isFridayPreview && settings.slideshowEnabled}
+                intervalSec={settings.slideIntervalSec}
+                fridayOfficials={previewOfficials}
+              />
             )}
           </div>
         </section>
